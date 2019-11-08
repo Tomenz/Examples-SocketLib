@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29503.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ssl-Example", "Ssl-Example.vcxproj", "{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}"
+	ProjectSection(ProjectDependencies) = postProject
+		{758383C6-5B15-4191-9F17-5835F216F7A1} = {758383C6-5B15-4191-9F17-5835F216F7A1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "socketlib", "SocketLib\socketlib.vcxproj", "{758383C6-5B15-4191-9F17-5835F216F7A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tcp-Example", "Tcp-Example.vcxproj", "{5554F33D-1EAC-4235-A53E-7D76050C9C84}"
+	ProjectSection(ProjectDependencies) = postProject
+		{758383C6-5B15-4191-9F17-5835F216F7A1} = {758383C6-5B15-4191-9F17-5835F216F7A1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dtls-Example", "Dtls-Example.vcxproj", "{BCEF399D-8062-4152-BE76-D0B52F6F4D88}"
+	ProjectSection(ProjectDependencies) = postProject
+		{758383C6-5B15-4191-9F17-5835F216F7A1} = {758383C6-5B15-4191-9F17-5835F216F7A1}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release_no_openssl|x64 = Release_no_openssl|x64
+		Release_no_openssl|x86 = Release_no_openssl|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Debug|x64.ActiveCfg = Debug|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Debug|x64.Build.0 = Debug|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Debug|x86.ActiveCfg = Debug|Win32
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Debug|x86.Build.0 = Debug|Win32
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release_no_openssl|x64.ActiveCfg = Release|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release_no_openssl|x64.Build.0 = Release|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release_no_openssl|x86.ActiveCfg = Release|Win32
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release_no_openssl|x86.Build.0 = Release|Win32
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release|x64.ActiveCfg = Release|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release|x64.Build.0 = Release|x64
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release|x86.ActiveCfg = Release|Win32
+		{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}.Release|x86.Build.0 = Release|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Debug|x64.ActiveCfg = Debug|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Debug|x64.Build.0 = Debug|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Debug|x86.ActiveCfg = Debug|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Debug|x86.Build.0 = Debug|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release_no_openssl|x64.ActiveCfg = Release_no_openssl|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release_no_openssl|x64.Build.0 = Release_no_openssl|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release_no_openssl|x86.ActiveCfg = Release_no_openssl|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release_no_openssl|x86.Build.0 = Release_no_openssl|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release|x64.ActiveCfg = Release|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release|x64.Build.0 = Release|x64
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release|x86.ActiveCfg = Release|Win32
+		{758383C6-5B15-4191-9F17-5835F216F7A1}.Release|x86.Build.0 = Release|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Debug|x64.ActiveCfg = Debug|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Debug|x64.Build.0 = Debug|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Debug|x86.ActiveCfg = Debug|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Debug|x86.Build.0 = Debug|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release_no_openssl|x64.ActiveCfg = Release|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release_no_openssl|x64.Build.0 = Release|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release_no_openssl|x86.ActiveCfg = Release|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release_no_openssl|x86.Build.0 = Release|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release|x64.ActiveCfg = Release|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release|x64.Build.0 = Release|x64
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release|x86.ActiveCfg = Release|Win32
+		{5554F33D-1EAC-4235-A53E-7D76050C9C84}.Release|x86.Build.0 = Release|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Debug|x64.ActiveCfg = Debug|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Debug|x64.Build.0 = Debug|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Debug|x86.ActiveCfg = Debug|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Debug|x86.Build.0 = Debug|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release_no_openssl|x64.ActiveCfg = Release|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release_no_openssl|x64.Build.0 = Release|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release_no_openssl|x86.ActiveCfg = Release|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release_no_openssl|x86.Build.0 = Release|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x64.ActiveCfg = Release|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x64.Build.0 = Release|x64
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x86.ActiveCfg = Release|Win32
+		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C72946B-4947-4ECD-8AA0-8DB0A4EB3EE1}
+	EndGlobalSection
+EndGlobal
