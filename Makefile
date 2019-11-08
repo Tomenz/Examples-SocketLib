@@ -10,26 +10,31 @@
 CC = g++
 CFLAGS = -Wall -O3 -std=c++14 -pthread -ffunction-sections -fdata-sections
 LDFLAGS = -Wl,--gc-sections -lpthread -static-libgcc -static-libstdc++
-TARGET = Http2Serv
 DIRS = SocketLib
 OBJLIBS = libsocketlib.a
 
 BUILDDIRS = $(DIRS:%=build-%)
 CLEANDIRS = $(DIRS:%=clean-%)
 
-INC_PATH = -I ./brotli/include
-LIB_PATH = -L ./zlib -L ./socketlib -L ./brotli -L ./CommonLib
+INC_PATH = 
+LIB_PATH = -L ./SocketLib
 
-OBJ = Http2Serv.o HttpServ.o ConfFile.o LogFile.o Trace.o TempFile.o SpawnProcess.o HPack.o #OBJ = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+OBJ = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
 LIB = -l socketlib -l crypto -l ssl
 
-all: $(TARGET)
+all: Ssl-Example Tcp-Example Dtls-Example
 
 #mDnsServ: $(BUILDDIRS) mDnsServ.o DnsProtokol.o
 #	$(CC) -o mDnsServ mDnsServ.o DnsProtokol.o $(LIB_PATH) $(LIB) $(LDFLAGS)
 
-$(TARGET): $(BUILDDIRS) $(OBJ)
-	$(CC) -o $(TARGET) $(OBJ) $(LIB_PATH) $(LIB) $(LDFLAGS)
+Ssl-Example: $(BUILDDIRS) $(OBJ)
+	$(CC) -o Ssl-Example Ssl-Example.o $(LIB_PATH) $(LIB) $(LDFLAGS)
+
+Tcp-Example: $(BUILDDIRS) $(OBJ)
+	$(CC) -o Tcp-Example Tcp-Example.o $(LIB_PATH) $(LIB) $(LDFLAGS)
+
+Dtls-Example: $(BUILDDIRS) $(OBJ)
+	$(CC) -o Dtls-Example Dtls-Example.o $(LIB_PATH) $(LIB) $(LDFLAGS)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(INC_PATH) -c $<
@@ -39,8 +44,8 @@ $(BUILDDIRS):
 	$(MAKE) -C $(@:build-%=%)
 
 clean: $(CLEANDIRS)
-	rm -f $(TARGET) $(OBJ) *~
-	rm -f mDnsServ mDnsServ.o DnsProtokol.o *~
+	rm -f Ssl-Example Tcp-Example Dtls-Example $(OBJ) *~
+	rm -f *.o *~
 
 $(CLEANDIRS):
 	$(MAKE) -C $(@:clean-%=%) clean

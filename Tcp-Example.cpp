@@ -11,7 +11,6 @@
 */
 
 #include <thread>
-#include <conio.h>
 #include <sstream>
 #include <iomanip>
 #include <iostream>
@@ -22,6 +21,7 @@
 using namespace std;
 
 #if defined (_WIN32) || defined (_WIN64)
+#include <conio.h>
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib, "x64/Debug/socketlib64d")
@@ -37,6 +37,18 @@ using namespace std;
 #endif
 #pragma comment(lib, "libcrypto.lib")
 #pragma comment(lib, "libssl.lib")
+#else   // Linux
+#include <termios.h>
+void _getch()
+{
+    struct termios t;
+    tcgetattr(fileno(stdin), &t);
+    t.c_lflag &= ~ICANON;
+    tcsetattr(fileno(stdin), TCSANOW, &t);
+    getchar();
+    t.c_lflag |= ICANON;
+    tcsetattr(fileno(stdin), TCSANOW, &t);
+}
 #endif
 
 void ServerThread(bool* bStop)
