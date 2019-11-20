@@ -56,8 +56,8 @@ void ServerThread(bool* bStop)
     bool bIsClosed = false;
 
     // 3 callback function to handle the server socket events
-    sock.BindErrorFunction([&](BaseSocket*) { cout << "Server socket: socket error" << endl; });
-    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server socket: socket closing" << endl; bIsClosed = true; });
+    sock.BindErrorFunction([&](BaseSocket*) { cout << "Server: socket error" << endl; });
+    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: socket closing" << endl; bIsClosed = true; });
 
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)
     {
@@ -104,6 +104,7 @@ void ClientThread(bool* bStop)
     SslUdpSocket sock;
     bool bIsClosed = false;
 
+    // 4 callback function to handle the client socket events
     sock.BindErrorFunction([&](BaseSocket*) { cout << "Client: socket error" << endl; });
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)

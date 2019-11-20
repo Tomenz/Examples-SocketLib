@@ -56,8 +56,8 @@ void ServerThread(bool* bStop)
     TcpServer sock;
 
     // 3 callback function to handle the server socket events
-    sock.BindErrorFunction([&](BaseSocket*) { cout << "Server socket: socket error" << endl; });
-    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server socket: socket closing" << endl; });
+    sock.BindErrorFunction([&](BaseSocket*) { cout << "Server: socket error" << endl; });
+    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: socket closing" << endl; });
 
     sock.BindNewConnection([&](const vector<TcpSocket*>& lstSockets)
     {
