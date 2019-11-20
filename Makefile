@@ -24,9 +24,6 @@ LIB = -l socketlib -l crypto -l ssl
 
 all: Ssl-Example Tcp-Example Dtls-Example
 
-#mDnsServ: $(BUILDDIRS) mDnsServ.o DnsProtokol.o
-#	$(CC) -o mDnsServ mDnsServ.o DnsProtokol.o $(LIB_PATH) $(LIB) $(LDFLAGS)
-
 Ssl-Example: $(BUILDDIRS) $(OBJ)
 	$(CC) -o Ssl-Example Ssl-Example.o $(LIB_PATH) $(LIB) $(LDFLAGS)
 
