@@ -71,6 +71,12 @@ void ServerThread(bool* bStop)
                 {
                     uint32_t nAvalible = pSock->GetBytesAvailible();
 
+                    if (nAvalible == 0) // Socket closed on remote
+                    {
+                        pSock->Close();
+                        return;
+                    }
+
                     auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
                     uint32_t nRead = pSock->Read(spBuffer.get(), nAvalible);
@@ -133,6 +139,12 @@ void ClientThread(bool* bStop)
     {
         uint32_t nAvalible = pTcpSocket->GetBytesAvailible();
 
+        if (nAvalible == 0) // Socket closed on remote
+        {
+            pTcpSocket->Close();
+            return;
+        }
+
         auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
         uint32_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
@@ -168,7 +180,7 @@ void ClientThread(bool* bStop)
     // and we crash. So we disable the Callback by setting a null pointer
     if (bIsClosed == false)
     {
-        sock.BindCloseFunction(nullptr);
+        sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));  // We need the casting , because 
         sock.Close();
     }
 }

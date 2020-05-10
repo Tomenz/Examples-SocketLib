@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dtls-Example", "Dtls-Exampl
 		{758383C6-5B15-4191-9F17-5835F216F7A1} = {758383C6-5B15-4191-9F17-5835F216F7A1}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StartTls-Example", "StartTls-Example.vcxproj", "{54E0E81F-9546-4BEF-9262-14099C696D81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -78,6 +80,18 @@ Global
 		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x64.Build.0 = Release|x64
 		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x86.ActiveCfg = Release|Win32
 		{BCEF399D-8062-4152-BE76-D0B52F6F4D88}.Release|x86.Build.0 = Release|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Debug|x64.ActiveCfg = Debug|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Debug|x64.Build.0 = Debug|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Debug|x86.ActiveCfg = Debug|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Debug|x86.Build.0 = Debug|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release_no_openssl|x64.ActiveCfg = Release|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release_no_openssl|x64.Build.0 = Release|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release_no_openssl|x86.ActiveCfg = Release|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release_no_openssl|x86.Build.0 = Release|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release|x64.ActiveCfg = Release|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release|x64.Build.0 = Release|x64
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release|x86.ActiveCfg = Release|Win32
+		{54E0E81F-9546-4BEF-9262-14099C696D81}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
