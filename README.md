@@ -1,3 +1,6 @@
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Tomenz/Examples-SocketLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Tomenz/Examples-SocketLib/alerts/)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Tomenz/Examples-SocketLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Tomenz/Examples-SocketLib/context:cpp)
+
 # Examples-SocketLib
 Some examples for the use of the SocketLib. Can be compiled with VS2019 or Linux with g++ (gcc version > 6)
 
