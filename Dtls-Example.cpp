@@ -75,7 +75,9 @@ void ServerThread(bool* bStop)
 
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
-            strOutput << put_time(localtime(&tNow), "%a, %d %b %Y %H:%M:%S") << " - ";
+            struct tm stTime;
+            if (::localtime_s(&stTime, &tNow) == 0)
+                strOutput << put_time(&stTime, "%a, %d %b %Y %H:%M:%S") << " - ";
             strOutput << strFrom.c_str() << " - Server received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
             cout << strOutput.str();
@@ -123,7 +125,9 @@ void ClientThread(bool* bStop)
 
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
-            strOutput << put_time(localtime(&tNow), "%a, %d %b %Y %H:%M:%S") << " - ";
+            struct tm stTime;
+            if (::localtime_s(&stTime, &tNow) == 0)
+                strOutput << put_time(&stTime, "%a, %d %b %Y %H:%M:%S") << " - ";
             strOutput << strFrom.c_str() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
             cout << strOutput.str();
