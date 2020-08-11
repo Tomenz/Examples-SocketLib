@@ -38,6 +38,7 @@ using namespace std;
 #pragma comment(lib, "libssl.lib")
 #else   // Linux
 #include <termios.h>
+#include <time.h>
 void _getch()
 {
     struct termios t;
@@ -48,6 +49,7 @@ void _getch()
     t.c_lflag |= ICANON;
     tcsetattr(fileno(stdin), TCSANOW, &t);
 }
+#define localtime_s(x,y) localtime_r(y,x)
 #endif
 
 void ServerThread(bool* bStop)
@@ -76,7 +78,7 @@ void ServerThread(bool* bStop)
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
             struct tm stTime;
-            if (::localtime_s(&stTime, &tNow) == 0)
+            if (localtime_s(&stTime, &tNow) == 0)
                 strOutput << put_time(&stTime, "%a, %d %b %Y %H:%M:%S") << " - ";
             strOutput << strFrom.c_str() << " - Server received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
@@ -126,7 +128,7 @@ void ClientThread(bool* bStop)
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
             struct tm stTime;
-            if (::localtime_s(&stTime, &tNow) == 0)
+            if (localtime_s(&stTime, &tNow) == 0)
                 strOutput << put_time(&stTime, "%a, %d %b %Y %H:%M:%S") << " - ";
             strOutput << strFrom.c_str() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
