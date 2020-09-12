@@ -63,12 +63,12 @@ void ServerThread(bool* bStop)
 
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)
     {
-        uint32_t nAvalible = pUdpSocket->GetBytesAvailible();
+        size_t nAvalible = pUdpSocket->GetBytesAvailible();
 
         auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
         string strFrom;
-        uint32_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
+        size_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
 
         if (nRead > 0)
         {
@@ -113,12 +113,12 @@ void ClientThread(bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)
     {
-        uint32_t nAvalible = pUdpSocket->GetBytesAvailible();
+        size_t nAvalible = pUdpSocket->GetBytesAvailible();
 
         auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
         string strFrom;
-        uint32_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
+        size_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
 
         if (nRead > 0)
         {

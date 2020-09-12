@@ -69,7 +69,7 @@ void ServerThread(bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    uint32_t nAvalible = pSock->GetBytesAvailible();
+                    size_t nAvalible = pSock->GetBytesAvailible();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -79,7 +79,7 @@ void ServerThread(bool* bStop)
 
                     auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
-                    uint32_t nRead = pSock->Read(spBuffer.get(), nAvalible);
+                    size_t nRead = pSock->Read(spBuffer.get(), nAvalible);
 
                     if (nRead > 0)
                     {
@@ -137,7 +137,7 @@ void ClientThread(bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        uint32_t nAvalible = pTcpSocket->GetBytesAvailible();
+        size_t nAvalible = pTcpSocket->GetBytesAvailible();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -147,7 +147,7 @@ void ClientThread(bool* bStop)
 
         auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
-        uint32_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
+        size_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
 
         if (nRead > 0)
         {
