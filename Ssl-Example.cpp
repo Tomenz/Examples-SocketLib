@@ -59,13 +59,13 @@ const int AF_INET6  = 23;   // IPv6
 const int AF_INET6 = 10;   // IPv6
 #endif
 
-void ServerThread(bool* bStop)
+void ServerThread(const bool* bStop)
 {
-    SslTcpServer sock;  // TcpServer if TLS/SSL is not used
+    SslTcpServer sock;
 
     // 3 callback function to handle the server socket events
-    sock.BindErrorFunction([&](BaseSocket* pSock) { cout << "Server: socket error" << endl; pSock->Close(); }); // Must call Close function
-    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: socket closing" << endl; });
+    sock.BindErrorFunction([&](BaseSocket* pSock) { cout << "Server: server socket error" << endl; pSock->Close(); }); // Must call Close function
+    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: server socket closing" << endl; });
 
     sock.BindNewConnection([&](const vector<TcpSocket*>& lstSockets)
     {
@@ -77,7 +77,7 @@ void ServerThread(bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    size_t nAvalible = pSock->GetBytesAvailible();
+                    const size_t nAvalible = pSock->GetBytesAvailible();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -85,14 +85,14 @@ void ServerThread(bool* bStop)
                         return;
                     }
 
-                    auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+                    auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
-                    size_t nRead = pSock->Read(spBuffer.get(), nAvalible);
+                    const size_t nRead = pSock->Read(&spBuffer[0], nAvalible);
 
                     if (nRead > 0)
                     {
                         string strRec(nRead, 0);
-                        copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+                        copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
                         stringstream strOutput;
                         strOutput << pSock->GetClientAddr() << " - Server received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
@@ -102,19 +102,18 @@ void ServerThread(bool* bStop)
                         strRec = "Server echo: " + strRec;
                         pSock->Write(&strRec[0], strRec.size());
 
-                        pSock->Close();
+                        //pSock->Close(); // Optional, if you don't close the socket, the connection stays open
                     }
                 });
                 pSocket->BindErrorFunction([&](BaseSocket* pSock)
                 {
                     // there was an error, we close the socket
                     pSock->Close();
-                    cout << "Server accept: socket error" << endl;
+                    cout << "Server: accept socket error" << endl;
                 });
                 pSocket->BindCloseFunction([&](BaseSocket* pSock)
                 {
-                    // We let the socket destroy it self, use this on sockets received by the server
-                    pSock->SelfDestroy();
+                    cout << "Server: accept socket closing" << endl;
                 });
 
                 pSocket->StartReceiving();  // start to receive data
@@ -129,7 +128,7 @@ void ServerThread(bool* bStop)
     sock.SetAlpnProtokollNames(Alpn);
 
     // start der server socket
-    bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
+    const bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
 
     while (*bStop == false)
     {
@@ -140,7 +139,7 @@ void ServerThread(bool* bStop)
     sock.Close();
 }
 
-void ClientThread(bool* bStop)
+void ClientThread(const bool* bStop)
 {
     SslTcpSocket sock;
     const string strHost("localhost");
@@ -151,7 +150,7 @@ void ClientThread(bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        size_t nAvalible = pTcpSocket->GetBytesAvailible();
+        size_t const nAvalible = pTcpSocket->GetBytesAvailible();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -159,14 +158,14 @@ void ClientThread(bool* bStop)
             return;
         }
 
-        auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+        auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
-        size_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
+        const size_t nRead = pTcpSocket->Read(&spBuffer[0], nAvalible);
 
         if (nRead > 0)
         {
             string strRec(nRead, 0);
-            copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+            copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
             stringstream strOutput;
             strOutput << pTcpSocket->GetClientAddr() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
@@ -177,12 +176,12 @@ void ClientThread(bool* bStop)
 
     sock.BindFuncConEstablished([&](TcpSocket* pTcpSocket)
     {
-        long nResult = reinterpret_cast<SslTcpSocket*>(pTcpSocket)->CheckServerCertificate(strHost.c_str());
+        const long nResult = dynamic_cast<SslTcpSocket*>(pTcpSocket)->CheckServerCertificate(strHost.c_str());
         if (nResult != 0)
             cout << "Connected Zertifikat not verified\r\n";
 
         // From Server selected Alpn Protocol
-        string Protocoll = reinterpret_cast<SslTcpSocket*>(pTcpSocket)->GetSelAlpnProtocol();
+        string Protocoll = dynamic_cast<SslTcpSocket*>(pTcpSocket)->GetSelAlpnProtocol();
 
         pTcpSocket->Write("Hallo World", 11);
     });
@@ -193,7 +192,7 @@ void ClientThread(bool* bStop)
     vector<string> Alpn({ { "h2" }, { "http/1.1" } });
     sock.SetAlpnProtokollNames(Alpn);
 
-    bool bConnected = sock.Connect(strHost.c_str(), 3461, AF_INET); // force to use IPv4. if above ::1 is used on the server, use here AF_INET6
+    const bool bConnected = sock.Connect(strHost.c_str(), 3461, AF_INET); // force to use IPv4. if above ::1 is used on the server, use here AF_INET6
     if (bConnected == false)
         cout << "error creating client socket" << endl;
 
@@ -207,8 +206,11 @@ void ClientThread(bool* bStop)
     // and we crash. So we disable the Callback by setting a null pointer
     if (bIsClosed == false)
     {
-        sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));
+        //sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));
         sock.Close();
+        // We wait until the callback above was called
+        while (bIsClosed == false)
+            this_thread::sleep_for(chrono::milliseconds(10));
     }
 }
 

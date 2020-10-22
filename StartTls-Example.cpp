@@ -50,7 +50,7 @@ void _getch()
 }
 #endif
 
-void ServerThread(bool* bStop)
+void ServerThread(const bool* bStop)
 {
     TcpServer sock;
     bool bClientConnected = false;
@@ -71,7 +71,7 @@ void ServerThread(bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    size_t nAvalible = pSock->GetBytesAvailible();
+                    const size_t nAvalible = pSock->GetBytesAvailible();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -79,18 +79,18 @@ void ServerThread(bool* bStop)
                         return;
                     }
 
-                    auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+                    auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
-                    size_t nRead = pSock->Read(spBuffer.get(), nAvalible);
+                    const size_t nRead = pSock->Read(spBuffer.get(), nAvalible);
 
                     if (nRead > 0)
                     {
                         string strRec(nRead, 0);
-                        copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+                        copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
                         if (strRec == "STARTTLS")
                         {
-                            SslTcpSocket* pSslTcpSocket = new SslTcpSocket(pSock);
+                            SslTcpSocket* pSslTcpSocket = SslTcpSocket::SwitchToSll(pSock);
                             pSock->SelfDestroy();
                             if (pSslTcpSocket->AddServerCertificat("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem", nullptr) == false)
                             {
@@ -110,20 +110,20 @@ void ServerThread(bool* bStop)
                         strRec = "Server echo: " + strRec;
                         pSock->Write(&strRec[0], strRec.size());
 
-//                        pSock->Close();
+                        //pSock->Close(); // Optional, if you don't close the socket, the connection stays open
                     }
                 });
                 pSocket->BindErrorFunction([&](BaseSocket* pSock)
                 {
                     // there was an error, we close the socket
                     pSock->Close();
-                    cout << "Server accept: socket error" << endl;
+                    cout << "Server: accept socket error" << endl;
                 });
                 pSocket->BindCloseFunction([&](BaseSocket* pSock)
                 {
                     // We let the socket destroy it self, use this on sockets received by the server
-                    pSock->SelfDestroy();
                     bClientConnected = false;
+                    cout << "Server: accept socket closing" << endl;
                 });
 
                 pSocket->StartReceiving();  // start to receive data
@@ -133,7 +133,7 @@ void ServerThread(bool* bStop)
 
 
     // start der server socket
-    bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
+    const bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
 
     while (*bStop == false || bClientConnected == true)
     {
@@ -144,9 +144,9 @@ void ServerThread(bool* bStop)
     sock.Close();
 }
 
-void ClientThread(bool* bStop)
+void ClientThread(const bool* bStop)
 {
-    TcpSocket* sock = new TcpSocket;    // We need a pointer, beause we switch it to a SslTcp class
+    auto sock = make_unique<TcpSocket>();
     bool bIsClosed = false;
     bool bFirstConnect = false;
 
@@ -155,7 +155,7 @@ void ClientThread(bool* bStop)
     sock->BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock->BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        size_t nAvalible = pTcpSocket->GetBytesAvailible();
+        const size_t nAvalible = pTcpSocket->GetBytesAvailible();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -165,12 +165,12 @@ void ClientThread(bool* bStop)
 
         auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
 
-        size_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
+        const size_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
 
         if (nRead > 0)
         {
             string strRec(nRead, 0);
-            copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+            copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
             stringstream strOutput;
             strOutput << pTcpSocket->GetClientAddr() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
@@ -183,27 +183,27 @@ void ClientThread(bool* bStop)
     {
         if (bFirstConnect == false)
         {
+            bFirstConnect = true;   // The Function will be called twice, after the TLS is established
+
             pTcpSocket->Write("STARTTLS", 8);
             // we wait until the STARTTLS message is send
             if(pTcpSocket->GetOutBytesInQue() > 0)
                 this_thread::sleep_for(chrono::milliseconds(10));
 
-            SslTcpSocket* pSslTcpSocket = new SslTcpSocket(pTcpSocket);
-            pTcpSocket->SelfDestroy();
+            auto pSslTcpSocket = make_unique<SslTcpSocket>(pTcpSocket); // Make a new SslSocket
+            pTcpSocket->SelfDestroy();  // The current TcpSocket should delete it self, after the Callback return
             // https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt
             pSslTcpSocket->SetTrustedRootCertificates("certs/ca-root.crt");
             pSslTcpSocket->SetConnectState();
             pSslTcpSocket->StartReceiving();
-            sock = pSslTcpSocket;
-
-            bFirstConnect = true;
+            sock = move(pSslTcpSocket); // We use the new TlsSocket from here on
             return;
         }
 
         pTcpSocket->Write("Message in TLS connection", 25);
     });
 
-    bool bConnected = sock->Connect("127.0.0.1", 3461);
+    const bool bConnected = sock->Connect("127.0.0.1", 3461);
     if (bConnected == false)
         cout << "error creating client socket" << endl;
 
@@ -219,8 +219,6 @@ void ClientThread(bool* bStop)
         while (bIsClosed == false)
             this_thread::sleep_for(chrono::milliseconds(10));
     }
-
-    delete sock;
 }
 
 int main(int argc, const char* argv[])
@@ -245,4 +243,3 @@ int main(int argc, const char* argv[])
 
     return 0;
 }
-

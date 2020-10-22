@@ -51,7 +51,7 @@ void _getch()
 }
 #endif
 
-void ServerThread(bool* bStop)
+void ServerThread(const bool* bStop)
 {
     TcpServer sock;
 
@@ -69,7 +69,7 @@ void ServerThread(bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    size_t nAvalible = pSock->GetBytesAvailible();
+                    const size_t nAvalible = pSock->GetBytesAvailible();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -77,14 +77,14 @@ void ServerThread(bool* bStop)
                         return;
                     }
 
-                    auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+                    auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
-                    size_t nRead = pSock->Read(spBuffer.get(), nAvalible);
+                    const size_t nRead = pSock->Read(&spBuffer[0], nAvalible);
 
                     if (nRead > 0)
                     {
                         string strRec(nRead, 0);
-                        copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+                        copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
                         stringstream strOutput;
                         strOutput << pSock->GetClientAddr() << " - Server received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
@@ -94,19 +94,18 @@ void ServerThread(bool* bStop)
                         strRec = "Server echo: " + strRec;
                         pSock->Write(&strRec[0], strRec.size());
 
-                        pSock->Close();
+                        //pSock->Close(); // Optional, if you don't close the socket, the connection stays open
                     }
                 });
                 pSocket->BindErrorFunction([&](BaseSocket* pSock)
                 {
                     // there was an error, we close the socket
                     pSock->Close();
-                    cout << "Server accept: socket error" << endl;
+                    cout << "Server: accept socket error" << endl;
                 });
                 pSocket->BindCloseFunction([&](BaseSocket* pSock)
                 {
-                    // We let the socket destroy it self, use this on sockets received by the server
-                    pSock->SelfDestroy();
+                    cout << "Server: accept socket closing" << endl;
                 });
 
                 pSocket->StartReceiving();  // start to receive data
@@ -116,7 +115,7 @@ void ServerThread(bool* bStop)
 
 
     // start der server socket
-    bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
+    const bool bCreated = sock.Start("0.0.0.0", 3461);    // IPv6 use "::1" as address
 
     while (*bStop == false)
     {
@@ -127,7 +126,7 @@ void ServerThread(bool* bStop)
     sock.Close();
 }
 
-void ClientThread(bool* bStop)
+void ClientThread(const bool* bStop)
 {
     TcpSocket sock;
     bool bIsClosed = false;
@@ -137,7 +136,7 @@ void ClientThread(bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        size_t nAvalible = pTcpSocket->GetBytesAvailible();
+        const size_t nAvalible = pTcpSocket->GetBytesAvailible();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -145,14 +144,14 @@ void ClientThread(bool* bStop)
             return;
         }
 
-        auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+        auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
-        size_t nRead = pTcpSocket->Read(spBuffer.get(), nAvalible);
+        const size_t nRead = pTcpSocket->Read(&spBuffer[0], nAvalible);
 
         if (nRead > 0)
         {
             string strRec(nRead, 0);
-            copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+            copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
             stringstream strOutput;
             strOutput << pTcpSocket->GetClientAddr() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
@@ -166,7 +165,7 @@ void ClientThread(bool* bStop)
         pTcpSocket->Write("Hallo World", 11);
     });
 
-    bool bConnected = sock.Connect("127.0.0.1", 3461);
+    const bool bConnected = sock.Connect("127.0.0.1", 3461);
     if (bConnected == false)
         cout << "error creating client socket" << endl;
 

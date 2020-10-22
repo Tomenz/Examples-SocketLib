@@ -52,7 +52,7 @@ void _getch()
 #define localtime_s(x,y) localtime_r(y,x)
 #endif
 
-void ServerThread(bool* bStop)
+void ServerThread(const bool* bStop)
 {
     SslUdpSocket sock;
     bool bIsClosed = false;
@@ -63,17 +63,17 @@ void ServerThread(bool* bStop)
 
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)
     {
-        size_t nAvalible = pUdpSocket->GetBytesAvailible();
+        const size_t nAvalible = pUdpSocket->GetBytesAvailible();
 
-        auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+        auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
         string strFrom;
-        size_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
+        const size_t nRead = pUdpSocket->Read(&spBuffer[0], nAvalible, strFrom);
 
         if (nRead > 0)
         {
             string strRec(nRead, 0);
-            copy(spBuffer.get(), spBuffer.get() + nRead,  &strRec[0]);
+            copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
@@ -91,7 +91,7 @@ void ServerThread(bool* bStop)
 
     sock.AddCertificat("certs/server-cert.crt", "certs/server-key.pem");
 
-    bool bCreated = sock.CreateServerSide("0.0.0.0", 3461);
+    const bool bCreated = sock.CreateServerSide("0.0.0.0", 3461);
 
     while (*bStop == false)
     {
@@ -103,7 +103,7 @@ void ServerThread(bool* bStop)
         this_thread::sleep_for(chrono::milliseconds(10));
 }
 
-void ClientThread(bool* bStop)
+void ClientThread(const bool* bStop)
 {
     SslUdpSocket sock;
     bool bIsClosed = false;
@@ -113,17 +113,17 @@ void ClientThread(bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](UdpSocket* pUdpSocket)
     {
-        size_t nAvalible = pUdpSocket->GetBytesAvailible();
+        const size_t nAvalible = pUdpSocket->GetBytesAvailible();
 
-        auto spBuffer = make_unique<unsigned char[]>(nAvalible + 1);
+        auto spBuffer = make_unique<uint8_t[]>(nAvalible + 1);
 
         string strFrom;
-        size_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
+        const size_t nRead = pUdpSocket->Read(spBuffer.get(), nAvalible, strFrom);
 
         if (nRead > 0)
         {
             string strRec(nRead, 0);
-            copy(spBuffer.get(), spBuffer.get() + nRead, &strRec[0]);
+            copy(&spBuffer[0], &spBuffer[nRead], &strRec[0]);
 
             stringstream strOutput;
             const auto tNow = chrono::system_clock::to_time_t(chrono::system_clock::now());
@@ -143,7 +143,7 @@ void ClientThread(bool* bStop)
 
     sock.AddCertificat("certs/client-cert.crt", "certs/client-key.pem");
 
-    bool bCreated = sock.CreateClientSide("0.0.0.0", 1911, "127.0.0.1:3461");
+    const bool bCreated = sock.CreateClientSide("0.0.0.0", 1911, "127.0.0.1:3461");
 
     while (*bStop == false)
     {
