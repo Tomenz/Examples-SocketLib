@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/Tomenz/Examples-SocketLib.svg?branch=master)](https://travis-ci.com/Tomenz/Examples-SocketLib)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f63ea9a3da7249218f1616032738ca77)](https://app.codacy.com/manual/Tomenz/Examples-SocketLib?utm_source=github.com&utm_medium=referral&utm_content=Tomenz/Examples-SocketLib&utm_campaign=Badge_Grade_Dashboard)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/Tomenz/Examples-SocketLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Tomenz/Examples-SocketLib/alerts/)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Tomenz/Examples-SocketLib.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Tomenz/Examples-SocketLib/context:cpp)
