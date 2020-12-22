@@ -69,7 +69,7 @@ void ServerThread(const bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    const size_t nAvalible = pSock->GetBytesAvailible();
+                    const size_t nAvalible = pSock->GetBytesAvailable();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -109,6 +109,7 @@ void ServerThread(const bool* bStop)
                 });
 
                 pSocket->StartReceiving();  // start to receive data
+                pSocket->Write("Server Hello Message", 20);
             }
         }
     });
@@ -136,7 +137,7 @@ void ClientThread(const bool* bStop)
     sock.BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
     sock.BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        const size_t nAvalible = pTcpSocket->GetBytesAvailible();
+        const size_t nAvalible = pTcpSocket->GetBytesAvailable();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -179,8 +180,11 @@ void ClientThread(const bool* bStop)
     // and we crash. So we disable the Callback by setting a null pointer
     if (bIsClosed == false)
     {
-        sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));  // We need the casting , because 
+        //sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));  // We need the casting , because 
         sock.Close();
+        // Alternativ, we wait until the callback above was called
+        while (bIsClosed == false)
+            this_thread::sleep_for(chrono::milliseconds(10));
     }
 }
 

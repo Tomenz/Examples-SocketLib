@@ -56,8 +56,8 @@ void ServerThread(const bool* bStop)
     bool bClientConnected = false;
 
     // 3 callback function to handle the server socket events
-    sock.BindErrorFunction([&](BaseSocket* pSock) { cout << "Server: socket error" << endl; pSock->Close(); }); // Must call Close function
-    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: socket closing" << endl; });
+    sock.BindErrorFunction([&](BaseSocket* pSock) { cout << "Server: socket error" << endl << flush; pSock->Close(); }); // Must call Close function
+    sock.BindCloseFunction([&](BaseSocket*) { cout << "Server: socket closing" << endl << flush; });
 
     sock.BindNewConnection([&](const vector<TcpSocket*>& lstSockets)
     {
@@ -71,7 +71,7 @@ void ServerThread(const bool* bStop)
                 // 3 callback functions to handle the sockets events
                 pSocket->BindFuncBytesReceived([&](TcpSocket* pSock)
                 {
-                    const size_t nAvalible = pSock->GetBytesAvailible();
+                    const size_t nAvalible = pSock->GetBytesAvailable();
 
                     if (nAvalible == 0) // Socket closed on remote
                     {
@@ -94,18 +94,20 @@ void ServerThread(const bool* bStop)
                             pSock->SelfDestroy();
                             if (pSslTcpSocket->AddServerCertificat("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem", nullptr) == false)
                             {
+                                cout << "Server: can't load certificate" << endl;
                                 pSslTcpSocket->Close();
                                 return;
                             }
                             pSslTcpSocket->SetAcceptState();
                             pSslTcpSocket->StartReceiving();
+                            pSslTcpSocket->Write("Server Hello Message with TLS", 29);
                             return;
                         }
 
                         stringstream strOutput;
                         strOutput << pSock->GetClientAddr() << " - Server received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
-                        cout << strOutput.str();
+                        cout << strOutput.str() << flush;
 
                         strRec = "Server echo: " + strRec;
                         pSock->Write(&strRec[0], strRec.size());
@@ -117,16 +119,17 @@ void ServerThread(const bool* bStop)
                 {
                     // there was an error, we close the socket
                     pSock->Close();
-                    cout << "Server: accept socket error" << endl;
+                    cout << "Server: accept socket error" << endl << flush;
                 });
                 pSocket->BindCloseFunction([&](BaseSocket* pSock)
                 {
                     // We let the socket destroy it self, use this on sockets received by the server
                     bClientConnected = false;
-                    cout << "Server: accept socket closing" << endl;
+                    cout << "Server: accept socket closing" << endl << flush;
                 });
 
                 pSocket->StartReceiving();  // start to receive data
+                pSocket->Write("Server Hello Message none TLS", 29);
             }
         }
     });
@@ -151,11 +154,11 @@ void ClientThread(const bool* bStop)
     bool bFirstConnect = false;
 
     // client socket has 4 callback function
-    sock->BindErrorFunction([&](BaseSocket* pSock) { cout << "Client: socket error" << endl; pSock->Close(); }); // Must call Close function
-    sock->BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl; bIsClosed = true; });
+    sock->BindErrorFunction([&](BaseSocket* pSock) { cout << "Client: socket error" << endl << flush; pSock->Close(); }); // Must call Close function
+    sock->BindCloseFunction([&](BaseSocket*) { cout << "Client: socket closing" << endl << flush; bIsClosed = true; });
     sock->BindFuncBytesReceived([&](TcpSocket* pTcpSocket)
     {
-        const size_t nAvalible = pTcpSocket->GetBytesAvailible();
+        const size_t nAvalible = pTcpSocket->GetBytesAvailable();
 
         if (nAvalible == 0) // Socket closed on remote
         {
@@ -175,7 +178,7 @@ void ClientThread(const bool* bStop)
             stringstream strOutput;
             strOutput << pTcpSocket->GetClientAddr() << " - Client received: " << nRead << " Bytes, \"" << strRec << "\"" << endl;
 
-            cout << strOutput.str();
+            cout << strOutput.str() << flush;
         }
     });
 
@@ -205,7 +208,7 @@ void ClientThread(const bool* bStop)
 
     const bool bConnected = sock->Connect("127.0.0.1", 3461);
     if (bConnected == false)
-        cout << "error creating client socket" << endl;
+        cout << "error creating client socket" << endl << flush;
 
     while (*bStop == false)
     {
