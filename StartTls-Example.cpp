@@ -190,7 +190,7 @@ void ClientThread(const bool* bStop)
 
             pTcpSocket->Write("STARTTLS", 8);
             // we wait until the STARTTLS message is send
-            if(pTcpSocket->GetOutBytesInQue() > 0)
+            while (pTcpSocket->GetOutBytesInQue() > 0)
                 this_thread::sleep_for(chrono::milliseconds(10));
 
             auto pSslTcpSocket = make_unique<SslTcpSocket>(pTcpSocket); // Make a new SslSocket
