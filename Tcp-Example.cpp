@@ -22,21 +22,6 @@ using namespace std;
 
 #if defined (_WIN32) || defined (_WIN64)
 #include <conio.h>
-#ifdef _DEBUG
-#ifdef _WIN64
-#pragma comment(lib, "x64/Debug/socketlib64d")
-#else
-#pragma comment(lib, "Debug/socketlib32d")
-#endif
-#else
-#ifdef _WIN64
-#pragma comment(lib, "x64/Release/socketlib64")
-#else
-#pragma comment(lib, "Release/socketlib32")
-#endif
-#endif
-#pragma comment(lib, "libcrypto.lib")
-#pragma comment(lib, "libssl.lib")
 #else   // Linux
 #include <termios.h>
 void _getch()
@@ -180,7 +165,7 @@ void ClientThread(const bool* bStop)
     // and we crash. So we disable the Callback by setting a null pointer
     if (bIsClosed == false)
     {
-        //sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));  // We need the casting , because 
+        //sock.BindCloseFunction(static_cast<function<void(BaseSocket*)>>(nullptr));  // We need the casting , because
         sock.Close();
         // Alternativ, we wait until the callback above was called
         while (bIsClosed == false)
@@ -210,4 +195,3 @@ int main(int argc, const char* argv[])
 
     return 0;
 }
-
