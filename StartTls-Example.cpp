@@ -77,7 +77,7 @@ void ServerThread(const bool* bStop)
                         {
                             SslTcpSocket* pSslTcpSocket = SslTcpSocket::SwitchToSll(pSock);
                             pSock->SelfDestroy();
-                            if (pSslTcpSocket->AddServerCertificat("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem", nullptr) == false)
+                            if (pSslTcpSocket->AddServerCertificate("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem", nullptr) == false)
                             {
                                 cout << "Server: can't load certificate" << endl;
                                 pSslTcpSocket->Close();

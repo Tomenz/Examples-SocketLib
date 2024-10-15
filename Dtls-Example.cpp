@@ -74,7 +74,7 @@ void ServerThread(const bool* bStop)
         }
     });
 
-    sock.AddCertificat("certs/server-cert.crt", "certs/server-key.pem");
+    sock.AddCertificate("certs/server-cert.crt", "certs/server-key.pem");
 
     const bool bCreated = sock.CreateServerSide("0.0.0.0", 3461);
 
@@ -126,7 +126,7 @@ void ClientThread(const bool* bStop)
         sock.Write("Hallo World", 11, "127.0.0.1:3461");
     });
 
-    sock.AddCertificat("certs/client-cert.crt", "certs/client-key.pem");
+    sock.AddCertificate("certs/client-cert.crt", "certs/client-key.pem");
 
     const bool bCreated = sock.CreateClientSide("0.0.0.0", 1911, "127.0.0.1:3461");
 

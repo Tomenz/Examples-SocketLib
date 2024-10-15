@@ -109,7 +109,7 @@ void ServerThread(const bool* bStop)
     });
 
 
-    sock.AddCertificat("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem");    // root certificate, host certificate, host key
+    sock.AddCertificate("certs/ca-root.crt", "certs/127-0-0-1.crt", "certs/127-0-0-1-key.pem");    // root certificate, host certificate, host key
     //sock.SetDHParameter("dh-file.txt");
     vector<string> Alpn({ { "h2" },{ "http/1.1" } });   // optional
     sock.SetAlpnProtokollNames(Alpn);
