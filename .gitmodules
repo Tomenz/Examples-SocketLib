@@ -1,4 +1,4 @@
 [submodule "SocketLib"]
 	path = SocketLib
 	url = https://github.com/Tomenz/SocketLib
-	ignore = untracked
+	branch = master
