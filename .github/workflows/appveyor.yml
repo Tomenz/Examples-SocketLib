@@ -1,8 +1,8 @@
 version: 1.0.{build}
 
-install:
-- git submodule init
-- git submodule update
+before_build:
+  git submodule init
+  git submodule update
 
 build:
   verbosity: minimal
