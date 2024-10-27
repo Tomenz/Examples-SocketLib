@@ -1,8 +1,7 @@
 version: 1.0.{build}
 
-before_build:
-  git submodule init
-  git submodule update
+install:
+- git submodule update --init --recurserve
 
 build:
   verbosity: minimal
