@@ -3,6 +3,9 @@ configuration: Release
 platform: x64
 environment:
   OpenSSL_Home: C:\OpenSSL-v111-Win64\
+install:
+  git submodule init
+  git submodule update
 build:
   project: Ssl-Example.vcxproj
   verbosity: minimal
