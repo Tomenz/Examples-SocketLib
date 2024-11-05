@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29503.13
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ssl-Example", "Ssl-Example.vcxproj", "{F8F4CC83-F1BF-4519-8EE5-75176E3C9224}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -21,6 +21,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dtls-Example", "Dtls-Exampl
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StartTls-Example", "StartTls-Example.vcxproj", "{54E0E81F-9546-4BEF-9262-14099C696D81}"
+	ProjectSection(ProjectDependencies) = postProject
+		{758383C6-5B15-4191-9F17-5835F216F7A1} = {758383C6-5B15-4191-9F17-5835F216F7A1}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
