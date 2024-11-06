@@ -3,7 +3,7 @@ image: Visual Studio 2019
 configuration: Release
 platform: x64
 environment:
-  OpenSSL_Home: C:\OpenSSL-Win64\
+  OpenSSL_Home: C:\OpenSSL-v331-Win64\
 install:
 - git submodule init
 - git submodule update
