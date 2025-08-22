@@ -48,9 +48,13 @@ target_link_libraries(StartTls-Example socketlib ${LIBCRYPTO} ${LIBSSL})
 add_executable(Dtls-Example Dtls-Example.cpp)
 target_link_libraries(Dtls-Example socketlib ${LIBCRYPTO} ${LIBSSL})
 
+add_executable(Notify-Example Notify-Example.cpp)
+target_link_libraries(Notify-Example socketlib ${LIBCRYPTO} ${LIBSSL})
+
 if(NOT MSVC AND UA_ENABLE_ENCRYPTION_OPENSSL)
   target_link_libraries(Tcp-Example pthread)
   target_link_libraries(Ssl-Example pthread)
   target_link_libraries(StartTls-Example pthread)
   target_link_libraries(Dtls-Example pthread)
+  target_link_libraries(Notify-Example pthread)
 endif()
