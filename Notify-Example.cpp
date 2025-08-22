@@ -9,7 +9,9 @@
 #include <conio.h>
 #else   // Linux
 #include <termios.h>
-#include <time.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 auto _kbhit = []() -> int
 {
     struct termios oldt, newt;
